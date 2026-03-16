@@ -8,9 +8,9 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "echo lint not configured yet",
-    "typecheck": "echo typecheck not configured yet",
-    "test": "echo test not configured yet",
-    "verify": "pnpm lint && pnpm typecheck && pnpm test"
+    "lint": "node scripts/lint.mjs",
+    "typecheck": "node scripts/typecheck.mjs",
+    "test": "npm --workspace apps/in-toss-app test",
+    "verify": "node scripts/verify-ci.mjs"
   }
 }
