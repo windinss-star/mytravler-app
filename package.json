@@ -1,0 +1,16 @@
+{
+  "name": "travel-youtuber-course-app",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "echo lint not configured yet",
+    "typecheck": "echo typecheck not configured yet",
+    "test": "echo test not configured yet",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test"
+  }
+}
