@@ -1,2 +1,4 @@
 .codex-skill-install/
 .worktrees/
+.tools/
+.pnpm-store/
