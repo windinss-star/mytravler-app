@@ -2,3 +2,4 @@
 .worktrees/
 .tools/
 .pnpm-store/
+node_modules/
