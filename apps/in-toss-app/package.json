@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node src/test/smoke.test.js"
+    "test": "node --experimental-strip-types src/test/test-all.js",
+    "preview": "node --experimental-strip-types src/preview/server.js"
   },
   "dependencies": {
     "react": "^19.2.0",

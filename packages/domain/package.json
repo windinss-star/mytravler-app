@@ -1,0 +1,15 @@
+{
+  "name": "@travel/domain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types src/__tests__/entities.test.ts"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  }
+}

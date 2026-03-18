@@ -10,7 +10,7 @@
   "scripts": {
     "lint": "node scripts/lint.mjs",
     "typecheck": "node scripts/typecheck.mjs",
-    "test": "npm --workspace apps/in-toss-app test",
+    "test": "npm --workspaces --if-present test",
     "verify": "node scripts/verify-ci.mjs"
   }
 }

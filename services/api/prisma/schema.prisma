@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Youtuber {
+  id          String @id
+  channelName String
+  displayName String
+  isActive    Boolean
+}
+
+model Country {
+  id     String @id
+  code   String @unique
+  nameKo String
+  nameEn String
+}
+
+model City {
+  id        String @id
+  countryId String
+  nameKo    String
+  nameEn    String
+}
+
+model Place {
+  id        String @id
+  cityId    String
+  countryId String
+  name      String
+  category  String
+}
+
+model Course {
+  id         String @id
+  youtuberId String
+  countryId  String
+  cityId     String
+  title      String
+}

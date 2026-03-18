@@ -1,1 +1,1 @@
-export { HomeScreen } from '../features/home/HomeScreen.js';
+export { AppTabs } from '../navigation/AppTabs.js';
