@@ -19,10 +19,10 @@ import { YouTuberListScreen } from '../features/youtubers/YouTuberListScreen.js'
 
 function Layout({ title, activeTab, children }) {
   const tabs = [
-    { id: 'home', label: '홈', href: '/' },
-    { id: 'countries', label: '국가', href: '/countries' },
-    { id: 'youtubers', label: '유튜버', href: '/youtubers' },
-    { id: 'my', label: '마이', href: '/my' },
+    { id: 'home', label: '홈', href: '/', icon: '⌂' },
+    { id: 'countries', label: '국가', href: '/countries', icon: '◎' },
+    { id: 'youtubers', label: '유튜버', href: '/youtubers', icon: '◉' },
+    { id: 'my', label: '마이', href: '/my', icon: '◌' },
   ];
 
   return React.createElement(
@@ -41,24 +41,47 @@ function Layout({ title, activeTab, children }) {
         'style',
         null,
         `
-          :root { color-scheme: light; --bg: #f5efe6; --panel: #fffaf3; --ink: #172b3a; --muted: #5f6f7a; --line: #d9cfbf; --accent: #c96f3b; }
+          :root { color-scheme: dark; --bg: #0b0d10; --surface: #15181d; --surface-soft: #1b2027; --surface-strong: #20262f; --surface-nav: rgba(9,11,14,0.94); --ink: #f8fafc; --muted: #9aa4b2; --line: #262d36; --line-strong: #313a46; --accent: #4f8dff; }
           * { box-sizing: border-box; }
-          body { margin: 0; font-family: Georgia, "Noto Serif KR", serif; background: radial-gradient(circle at top, #fff8ef 0%, var(--bg) 55%, #efe3d2 100%); color: var(--ink); }
+          body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; background: var(--bg); color: var(--ink); }
           a { color: inherit; }
-          .shell { max-width: 1080px; margin: 0 auto; padding: 24px; }
-          .hero { padding: 24px; border: 1px solid var(--line); background: rgba(255,250,243,0.94); border-radius: 20px; box-shadow: 0 12px 30px rgba(23,43,58,0.08); }
-          .eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; margin: 0 0 8px; }
-          .hero h1 { margin: 0; font-size: clamp(32px, 5vw, 52px); }
-          .hero p { color: var(--muted); max-width: 720px; }
-          .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 20px 0 28px; }
-          .tab { display: block; text-align: center; padding: 14px 16px; text-decoration: none; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.72); }
-          .tab.active { background: var(--ink); color: white; border-color: var(--ink); }
-          .panel { padding: 22px; border: 1px solid var(--line); background: rgba(255,250,243,0.94); border-radius: 18px; box-shadow: 0 12px 24px rgba(23,43,58,0.06); }
-          .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-          .card { padding: 18px; border-radius: 16px; border: 1px solid var(--line); background: white; text-decoration: none; box-shadow: 0 10px 20px rgba(23,43,58,0.05); }
-          .card p, .panel p, .panel small { color: var(--muted); }
+          .shell { max-width: 430px; min-height: 100vh; margin: 0 auto; background: linear-gradient(180deg, #0d1014 0%, #090b0e 100%); }
+          .content { padding: 20px 20px 108px; }
+          .screen { display: grid; gap: 16px; }
+          .panel { display: grid; gap: 16px; padding: 20px; border-radius: 24px; background: var(--surface); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.28); }
+          .panel h1, .panel h2, .panel h3, .panel strong { color: var(--ink); }
+          .panel p, .panel small, .panel li { color: var(--muted); }
+          .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+          .card { padding: 18px; border-radius: 20px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; box-shadow: 0 10px 22px rgba(0,0,0,0.22); }
+          .card p, .card small { color: var(--muted); }
+          .bottom-nav { position: sticky; bottom: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 10px 14px 18px; background: var(--surface-nav); backdrop-filter: blur(22px); border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -12px 28px rgba(0,0,0,0.34); }
+          .bottom-nav-item { position: relative; display: grid; gap: 4px; justify-items: center; padding: 10px 6px 8px; border-radius: 14px; text-decoration: none; color: #7f8b99; font-size: 12px; font-weight: 600; letter-spacing: -0.01em; }
+          .bottom-nav-item.active { color: var(--ink); background: transparent; box-shadow: none; }
+          .bottom-nav-item.active::before { content: ""; position: absolute; top: 0; left: 50%; width: 24px; height: 3px; border-radius: 999px; background: var(--ink); transform: translateX(-50%); }
+          .bottom-nav-icon { font-size: 18px; line-height: 1; opacity: 0.92; }
+          .home-screen { display: grid; gap: 18px; }
+          .home-header { display: flex; align-items: center; justify-content: space-between; min-height: 32px; }
+          .home-service-name { margin: 0; font-size: 24px; line-height: 1.3; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
+          .home-search-form { margin: 0; }
+          .home-search-field { display: flex; align-items: center; gap: 10px; width: 100%; padding: 0 16px; height: 54px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
+          .home-search-icon { color: #7c8798; font-size: 18px; }
+          .home-search-input { flex: 1; border: 0; background: transparent; font-size: 15px; color: var(--ink); outline: none; }
+          .home-search-input::placeholder { color: #7c8798; }
+          .home-menu-list { display: grid; gap: 12px; }
+          .home-menu-item { display: grid; grid-template-columns: 72px minmax(0, 1fr) 20px; align-items: center; gap: 14px; min-height: 96px; padding: 14px 16px; border-radius: 24px; background: linear-gradient(180deg, var(--surface-soft) 0%, #161a20 100%); border: 1px solid var(--line); text-decoration: none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 22px rgba(0,0,0,0.22); }
+          .home-menu-visual { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; }
+          .home-menu-icon-shadow { position: absolute; inset: auto 10px 4px; height: 14px; border-radius: 999px; background: rgba(0,0,0,0.34); filter: blur(8px); }
+          .home-menu-icon { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 26px; }
+          .home-menu-icon-badge { position: absolute; inset: 3px; border-radius: 23px; background: linear-gradient(180deg, #303742 0%, #20262f 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -10px 18px rgba(0,0,0,0.18), 0 18px 24px rgba(0,0,0,0.2); }
+          .home-menu-icon-core { position: absolute; inset: 10px; border-radius: 18px; background: radial-gradient(circle at top, #3a434f 0%, #252c35 44%, #171b22 100%); box-shadow: inset 0 8px 16px rgba(255,255,255,0.07), inset 0 -10px 16px rgba(0,0,0,0.18); }
+          .home-menu-icon-gloss { position: absolute; top: 11px; left: 15px; width: 28px; height: 12px; border-radius: 999px; background: rgba(255,255,255,0.22); transform: rotate(-16deg); }
+          .home-menu-icon-glyph { position: relative; z-index: 1; font-size: 29px; transform: translateY(-1px); filter: saturate(1.04); }
+          .home-menu-copy { display: grid; gap: 6px; min-width: 0; }
+          .home-menu-title { font-size: 17px; line-height: 1.35; letter-spacing: -0.03em; color: var(--ink); }
+          .home-menu-description { font-size: 13px; line-height: 1.45; color: var(--muted); }
+          .home-menu-arrow { justify-self: end; font-size: 24px; color: #6d7785; transform: translateY(-1px); }
           ul, ol { padding-left: 18px; }
-          @media (max-width: 720px) { .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .shell { padding: 16px; } }
+          @media (max-width: 420px) { .content { padding: 16px 16px 104px; } .home-menu-item { grid-template-columns: 64px minmax(0, 1fr) 18px; min-height: 88px; padding: 12px 14px; } .home-menu-visual, .home-menu-icon { width: 64px; height: 64px; } }
         `,
       ),
     ),
@@ -69,78 +92,37 @@ function Layout({ title, activeTab, children }) {
         'div',
         { className: 'shell' },
         React.createElement(
-          'header',
-          { className: 'hero' },
-          React.createElement('p', { className: 'eyebrow' }, 'Local Preview'),
-          React.createElement('h1', null, '여행 유튜버 코스'),
+          'div',
+          { className: 'content' },
           React.createElement(
-            'p',
-            null,
-            '현재 seed 데이터 기반으로 국가, 유튜버, 코스 흐름을 브라우저에서 직접 눌러볼 수 있는 프리뷰입니다.',
+            'main',
+            { className: activeTab === 'home' ? 'screen' : 'panel' },
+            children,
           ),
         ),
         React.createElement(
           'nav',
-          { className: 'tabs' },
+          { className: 'bottom-nav' },
           ...tabs.map((tab) =>
             React.createElement(
               'a',
               {
                 key: tab.id,
                 href: tab.href,
-                className: activeTab === tab.id ? 'tab active' : 'tab',
+                className: activeTab === tab.id ? 'bottom-nav-item active' : 'bottom-nav-item',
               },
-              tab.label,
+              React.createElement('span', { className: 'bottom-nav-icon', 'aria-hidden': 'true' }, tab.icon),
+              React.createElement('span', null, tab.label),
             ),
           ),
         ),
-        React.createElement('main', { className: 'panel' }, children),
       ),
     ),
   );
 }
 
-
 function HomePreview() {
-  return React.createElement(
-    'div',
-    null,
-    React.createElement(HomeScreen),
-    React.createElement(
-      'div',
-      { className: 'grid' },
-      React.createElement(
-        'a',
-        { className: 'card', href: '/search?q=일' },
-        React.createElement('strong', null, '통합 검색'),
-        React.createElement('p', null, '국가, 도시, 유튜버, 장소, 코스를 한 번에 탐색합니다.'),
-      ),
-      React.createElement(
-        'a',
-        { className: 'card', href: '/map' },
-        React.createElement('strong', null, '지도에서 코스 보기'),
-        React.createElement('p', null, '여러 코스의 루트를 먼저 보고 상세로 이동합니다.'),
-      ),
-      React.createElement(
-        'a',
-        { className: 'card', href: '/countries' },
-        React.createElement('strong', null, '국가 탐색'),
-        React.createElement('p', null, '국가 목록에서 도시와 대표 코스를 살펴봅니다.'),
-      ),
-      React.createElement(
-        'a',
-        { className: 'card', href: '/youtubers' },
-        React.createElement('strong', null, '유튜버 탐색'),
-        React.createElement('p', null, '정렬과 즐겨찾기 레일을 포함한 목록을 봅니다.'),
-      ),
-      React.createElement(
-        'a',
-        { className: 'card', href: '/courses/course-pani-tokyo-1' },
-        React.createElement('strong', null, '인기 코스 보기'),
-        React.createElement('p', null, '빠니보틀의 도쿄 대표 코스를 바로 살펴봅니다.'),
-      ),
-    ),
-  );
+  return React.createElement(HomeScreen);
 }
 
 function CountriesPreview() {

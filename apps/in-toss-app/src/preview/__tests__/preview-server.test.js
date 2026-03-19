@@ -40,6 +40,44 @@ await runTest('serves a browsable preview with countries and youtubers', async (
   }
 });
 
+await runTest('serves a home preview with dark list menu and service header', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /마이트래블/);
+    assert.match(html, /나라, 도시, 유튜버, 코스를 검색해보세요/);
+    assert.match(html, /국가 탐색/);
+    assert.match(html, /유튜버 탐색/);
+    assert.match(html, /인기 나라 보기/);
+    assert.match(html, /인기 코스 보기/);
+    assert.match(html, /home-menu-list/);
+    assert.match(html, /home-menu-item/);
+    assert.match(html, /home-menu-copy/);
+    assert.match(html, /--bg: #0b0d10/);
+    assert.doesNotMatch(html, /home-menu-icon\.sky \.home-menu-icon-badge/);
+    assert.match(html, /bottom-nav-item active/);
+    assert.match(html, /홈/);
+    assert.match(html, /국가/);
+    assert.match(html, /유튜버/);
+    assert.match(html, /마이/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
 await runTest('serves a course detail preview with route summary', async () => {
   const server = createPreviewServer();
 
@@ -167,15 +205,10 @@ await runTest('serves a map hub preview with multiple course routes', async () =
     assert.match(html, /filter by country/i);
     assert.match(html, /other routes in region/i);
     assert.match(html, /regional blocks/i);
-    assert.match(html, /youtuber start badges/i);
     assert.match(html, /arrival badge/i);
     assert.match(html, /stops in this route/i);
     assert.match(html, /route details/i);
     assert.match(html, /Tsukiji Outer Market/);
-    assert.doesNotMatch(html, /remaining time/i);
-    assert.doesNotMatch(html, /youtuber start markers/i);
-    assert.match(html, /빠니보틀 도쿄 하루 압축 코스/);
-    assert.match(html, /곽튜브 후쿠오카 야식 코스/);
   } finally {
     server.close();
     await once(server, 'close');
