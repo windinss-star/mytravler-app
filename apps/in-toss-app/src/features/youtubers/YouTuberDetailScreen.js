@@ -2,7 +2,7 @@ import React from 'react';
 
 import { getYoutuberDetail } from './api.js';
 
-export function YouTuberDetailScreen({ youtuberId }) {
+export function YouTuberDetailScreen({ youtuberId, courseHrefBuilder }) {
   const detail = getYoutuberDetail(youtuberId);
 
   if (detail == null) {
@@ -22,7 +22,13 @@ export function YouTuberDetailScreen({ youtuberId }) {
         React.createElement(
           'li',
           { key: course.id },
-          React.createElement('strong', null, course.title),
+          courseHrefBuilder == null
+            ? React.createElement('strong', null, course.title)
+            : React.createElement(
+                'a',
+                { href: courseHrefBuilder(course) },
+                React.createElement('strong', null, course.title),
+              ),
           React.createElement('p', null, course.shortDescription),
         ),
       ),

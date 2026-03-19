@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function CourseCardList({ courses }) {
+export function CourseCardList({ courses, hrefBuilder }) {
   return React.createElement(
     'section',
     null,
@@ -12,7 +12,13 @@ export function CourseCardList({ courses }) {
         React.createElement(
           'li',
           { key: course.id },
-          React.createElement('strong', null, course.title),
+          hrefBuilder == null
+            ? React.createElement('strong', null, course.title)
+            : React.createElement(
+                'a',
+                { href: hrefBuilder(course) },
+                React.createElement('strong', null, course.title),
+              ),
           React.createElement('p', null, course.shortDescription),
         ),
       ),

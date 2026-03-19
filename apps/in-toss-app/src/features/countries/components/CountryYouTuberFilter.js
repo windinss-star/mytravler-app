@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function CountryYouTuberFilter({ youtubers }) {
+export function CountryYouTuberFilter({ youtubers, hrefBuilder }) {
   return React.createElement(
     'section',
     null,
@@ -10,11 +10,16 @@ export function CountryYouTuberFilter({ youtubers }) {
       null,
       ...youtubers.map((youtuber) =>
         React.createElement(
-          'button',
-          {
-            key: youtuber.id,
-            type: 'button',
-          },
+          hrefBuilder == null ? 'button' : 'a',
+          hrefBuilder == null
+            ? {
+                key: youtuber.id,
+                type: 'button',
+              }
+            : {
+                key: youtuber.id,
+                href: hrefBuilder(youtuber),
+              },
           youtuber.displayName,
         ),
       ),

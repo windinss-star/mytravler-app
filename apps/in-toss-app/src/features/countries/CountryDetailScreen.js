@@ -6,7 +6,7 @@ import { CountryYouTuberFilter } from './components/CountryYouTuberFilter.js';
 import { CourseCardList } from './components/CourseCardList.js';
 import { FavoriteCountriesRail } from './components/FavoriteCountriesRail.js';
 
-export function CountryDetailScreen({ countryId }) {
+export function CountryDetailScreen({ countryId, courseHrefBuilder, youtuberHrefBuilder }) {
   const detail = getCountryDetail(countryId);
 
   if (detail == null) {
@@ -17,9 +17,15 @@ export function CountryDetailScreen({ countryId }) {
     'section',
     null,
     React.createElement('h2', null, detail.country.nameKo),
-    React.createElement(CountryYouTuberFilter, { youtubers: detail.relatedYoutubers }),
+    React.createElement(CountryYouTuberFilter, {
+      youtubers: detail.relatedYoutubers,
+      hrefBuilder: youtuberHrefBuilder,
+    }),
     React.createElement(FavoriteCountriesRail, { countries: detail.favoriteCountries }),
     React.createElement(CityList, { cities: detail.cities }),
-    React.createElement(CourseCardList, { courses: detail.courses }),
+    React.createElement(CourseCardList, {
+      courses: detail.courses,
+      hrefBuilder: courseHrefBuilder,
+    }),
   );
 }

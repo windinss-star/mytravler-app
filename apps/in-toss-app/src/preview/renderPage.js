@@ -4,8 +4,10 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { getCountries } from '../features/countries/api.js';
 import { CountryDetailScreen } from '../features/countries/CountryDetailScreen.js';
 import { CountryListScreen } from '../features/countries/CountryListScreen.js';
+import { CourseDetailScreen } from '../features/courses/CourseDetailScreen.js';
 import { HomeScreen } from '../features/home/HomeScreen.js';
 import { MyScreen } from '../features/my/MyScreen.js';
+import { PlaceDetailScreen } from '../features/places/PlaceDetailScreen.js';
 import { getFavoriteYoutubers, getYoutubers } from '../features/youtubers/api.js';
 import { YouTuberDetailScreen } from '../features/youtubers/YouTuberDetailScreen.js';
 import { FavoriteYouTubersRail } from '../features/youtubers/components/FavoriteYouTubersRail.js';
@@ -184,6 +186,21 @@ export function renderPreviewPage(pathname, searchParams) {
     activeTab = 'countries';
     content = React.createElement(CountryDetailScreen, {
       countryId: pathname.replace('/countries/', ''),
+      courseHrefBuilder: (course) => `/courses/${course.id}`,
+      youtuberHrefBuilder: (youtuber) => `/youtubers/${youtuber.id}`,
+    });
+  } else if (pathname.startsWith('/courses/')) {
+    title = '코스 상세';
+    activeTab = 'countries';
+    content = React.createElement(CourseDetailScreen, {
+      courseId: pathname.replace('/courses/', ''),
+      placeHrefBuilder: (place) => `/places/${place.id}`,
+    });
+  } else if (pathname.startsWith('/places/')) {
+    title = '장소 상세';
+    activeTab = 'countries';
+    content = React.createElement(PlaceDetailScreen, {
+      placeId: pathname.replace('/places/', ''),
     });
   } else if (pathname === '/youtubers') {
     title = '유튜버';
@@ -196,6 +213,7 @@ export function renderPreviewPage(pathname, searchParams) {
     activeTab = 'youtubers';
     content = React.createElement(YouTuberDetailScreen, {
       youtuberId: pathname.replace('/youtubers/', ''),
+      courseHrefBuilder: (course) => `/courses/${course.id}`,
     });
   } else if (pathname === '/my') {
     title = '마이';

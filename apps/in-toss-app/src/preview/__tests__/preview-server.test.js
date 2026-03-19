@@ -39,3 +39,53 @@ await runTest('serves a browsable preview with countries and youtubers', async (
     await once(server, 'close');
   }
 });
+
+await runTest('serves a course detail preview with route summary', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/courses/course-pani-tokyo-1`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /대표 코스/);
+    assert.match(html, /방문 장소/);
+    assert.match(html, /Tsukiji Outer Market/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
+await runTest('serves a place detail preview with snapshot metadata', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/places/place-tokyo-1`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /장소 상세/);
+    assert.match(html, /Seafood breakfast market stop/);
+    assert.match(html, /opening hours/i);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
