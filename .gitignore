@@ -1,6 +1,9 @@
 .codex-skill-install/
+.agents/
+.tmp/
 .worktrees/
 .tools/
 .pnpm-store/
 node_modules/
+skills-lock.json
 docs/superpowers/summaries/
