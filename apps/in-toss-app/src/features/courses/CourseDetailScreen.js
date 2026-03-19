@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { getCourse } from '../../../../../services/api/src/routes/courses.ts';
+import { CourseSummary } from './components/CourseSummary.js';
+import { RouteMap } from './components/RouteMap.js';
 
 export function CourseDetailScreen({ courseId, placeHrefBuilder }) {
   const course = getCourse(courseId);
@@ -12,10 +14,14 @@ export function CourseDetailScreen({ courseId, placeHrefBuilder }) {
   return React.createElement(
     'section',
     null,
-    React.createElement('p', null, '대표 코스'),
-    React.createElement('h2', null, course.title),
-    React.createElement('p', null, course.shortDescription),
-    React.createElement('p', null, `Trip summary: ${course.placeItems.length} places in route order`),
+    React.createElement(RouteMap, {
+      places: course.places,
+      placeHrefBuilder,
+    }),
+    React.createElement(CourseSummary, {
+      course,
+      places: course.places,
+    }),
     React.createElement('h3', null, '방문 장소'),
     React.createElement(
       'ol',

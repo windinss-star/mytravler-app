@@ -5,9 +5,11 @@ import { getCountries } from '../features/countries/api.js';
 import { CountryDetailScreen } from '../features/countries/CountryDetailScreen.js';
 import { CountryListScreen } from '../features/countries/CountryListScreen.js';
 import { CourseDetailScreen } from '../features/courses/CourseDetailScreen.js';
+import { MapHubScreen } from '../features/courses/MapHubScreen.js';
 import { HomeScreen } from '../features/home/HomeScreen.js';
 import { MyScreen } from '../features/my/MyScreen.js';
 import { PlaceDetailScreen } from '../features/places/PlaceDetailScreen.js';
+import { SearchScreen } from '../features/search/SearchScreen.js';
 import { getFavoriteYoutubers, getYoutubers } from '../features/youtubers/api.js';
 import { YouTuberDetailScreen } from '../features/youtubers/YouTuberDetailScreen.js';
 import { FavoriteYouTubersRail } from '../features/youtubers/components/FavoriteYouTubersRail.js';
@@ -55,7 +57,7 @@ function Layout({ title, activeTab, children }) {
           .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
           .card { padding: 18px; border-radius: 16px; border: 1px solid var(--line); background: white; text-decoration: none; box-shadow: 0 10px 20px rgba(23,43,58,0.05); }
           .card p, .panel p, .panel small { color: var(--muted); }
-          ul { padding-left: 18px; }
+          ul, ol { padding-left: 18px; }
           @media (max-width: 720px) { .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .shell { padding: 16px; } }
         `,
       ),
@@ -98,6 +100,7 @@ function Layout({ title, activeTab, children }) {
   );
 }
 
+
 function HomePreview() {
   return React.createElement(
     'div',
@@ -106,6 +109,18 @@ function HomePreview() {
     React.createElement(
       'div',
       { className: 'grid' },
+      React.createElement(
+        'a',
+        { className: 'card', href: '/search?q=일' },
+        React.createElement('strong', null, '통합 검색'),
+        React.createElement('p', null, '국가, 도시, 유튜버, 장소, 코스를 한 번에 탐색합니다.'),
+      ),
+      React.createElement(
+        'a',
+        { className: 'card', href: '/map' },
+        React.createElement('strong', null, '지도에서 코스 보기'),
+        React.createElement('p', null, '여러 코스의 루트를 먼저 보고 상세로 이동합니다.'),
+      ),
       React.createElement(
         'a',
         { className: 'card', href: '/countries' },
@@ -120,9 +135,9 @@ function HomePreview() {
       ),
       React.createElement(
         'a',
-        { className: 'card', href: '/countries/country-jp' },
-        React.createElement('strong', null, '일본 상세'),
-        React.createElement('p', null, '관련 유튜버, 도시 목록, 대표 코스를 미리 확인합니다.'),
+        { className: 'card', href: '/courses/course-pani-tokyo-1' },
+        React.createElement('strong', null, '인기 코스 보기'),
+        React.createElement('p', null, '빠니보틀의 도쿄 대표 코스를 바로 살펴봅니다.'),
       ),
     ),
   );
@@ -177,7 +192,20 @@ export function renderPreviewPage(pathname, searchParams) {
   let activeTab = 'home';
   let content = React.createElement(HomePreview);
 
-  if (pathname === '/countries') {
+  if (pathname === '/search') {
+    title = '검색';
+    content = React.createElement(SearchScreen, {
+      query: searchParams.get('q') ?? '',
+    });
+  } else if (pathname === '/map') {
+    title = '지도 허브';
+    activeTab = 'countries';
+    content = React.createElement(MapHubScreen, {
+      activeCourseId: searchParams.get('course') ?? undefined,
+      countryId: searchParams.get('country') ?? undefined,
+      cityId: searchParams.get('city') ?? undefined,
+    });
+  } else if (pathname === '/countries') {
     title = '국가';
     activeTab = 'countries';
     content = React.createElement(CountriesPreview);
