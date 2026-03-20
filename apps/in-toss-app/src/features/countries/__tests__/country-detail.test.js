@@ -10,8 +10,22 @@ const html = renderToStaticMarkup(
   }),
 );
 
-assert.match(html, /관련 유튜버/);
-assert.match(html, /즐겨찾는 국가/);
-assert.match(html, /도시 목록/);
+assert.match(html, /일본/);
+assert.match(html, /Japan/);
+assert.match(html, /대표 도시/);
 assert.match(html, /대표 코스/);
 assert.match(html, /도쿄/);
+assert.match(html, /후쿠오카/);
+assert.match(html, /country-detail-map/);
+assert.match(html, /country-detail-flag-badge/);
+assert.match(html, /\/assets\/countries\/flag-jp\.svg/);
+assert.match(html, /country-city-list/);
+assert.match(html, /country-featured-courses/);
+assert.match(html, /country-detail-youtuber-stack/);
+assert.doesNotMatch(html, /country-related-youtubers/);
+assert.doesNotMatch(html, /country-city-description/);
+assert.doesNotMatch(html, /country-city-lead-course/);
+assert.match(html, /country-course-avatar/);
+assert.match(html, /빠니보틀 도쿄 하루 압축 여행/);
+assert.doesNotMatch(html, /country-section-title">국가 요약 지도/);
+assert.match(html, /\/countries\/country-jp\/cities\/city-tokyo/);

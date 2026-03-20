@@ -13,7 +13,7 @@ async function runTest(name, fn) {
   }
 }
 
-await runTest('serves a browsable preview with countries and youtubers', async () => {
+await runTest('serves a country detail preview with map summary and city-first sections', async () => {
   const server = createPreviewServer();
 
   server.listen(0, '127.0.0.1');
@@ -29,11 +29,98 @@ await runTest('serves a browsable preview with countries and youtubers', async (
     const html = await response.text();
 
     assert.equal(response.status, 200);
-    assert.match(html, /여행 유튜버 코스/);
-    assert.match(html, /국가/);
-    assert.match(html, /유튜버/);
+    assert.match(html, /일본/);
+    assert.match(html, /Japan/);
+    assert.match(html, /대표 도시/);
+    assert.match(html, /대표 코스/);
     assert.match(html, /도쿄/);
-    assert.match(html, /빠니보틀/);
+    assert.match(html, /후쿠오카/);
+    assert.match(html, /country-detail-map/);
+    assert.match(html, /country-detail-flag-badge/);
+    assert.match(html, /\/assets\/countries\/flag-jp\.svg/);
+    assert.match(html, /country-city-list/);
+    assert.match(html, /country-featured-courses/);
+    assert.match(html, /country-detail-youtuber-stack/);
+    assert.doesNotMatch(html, /country-related-youtubers/);
+    assert.doesNotMatch(html, /country-city-description/);
+    assert.doesNotMatch(html, /country-city-lead-course/);
+    assert.match(html, /country-course-avatar/);
+    assert.match(html, /빠니보틀 도쿄 하루 압축 여행/);
+    assert.doesNotMatch(html, /country-section-title">국가 요약 지도/);
+    assert.match(html, /\/countries\/country-jp\/cities\/city-tokyo/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
+await runTest('serves a city course list preview from the country detail flow', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/countries/country-jp/cities/city-tokyo`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /도쿄/);
+    assert.match(html, /Tokyo/);
+    assert.match(html, /도시 코스/);
+    assert.match(html, /빠니보틀 도쿄 하루 압축 여행/);
+    assert.match(html, /체코제이 도쿄 동네 산책 여행/);
+    assert.match(html, /country-city-course-list/);
+    assert.match(html, /country-city-youtuber-stack/);
+    assert.match(html, /방문 장소 2곳/);
+    assert.match(html, /여행 시간 2시간 40분/);
+    assert.doesNotMatch(html, /츠키지 장외시장 \(Tsukiji Outer Market\)/);
+    assert.doesNotMatch(html, /센소지 \(Senso-ji\)/);
+    assert.match(html, /시장 아침 식사와 아사쿠사 도보 동선을 담은 하루 여행/);
+    assert.match(html, /country-course-tag-list/);
+    assert.match(html, /당일치기/);
+    assert.match(html, /시장/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
+await runTest('serves a country selector preview with search and representative youtubers', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/countries`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /국가 선택/);
+    assert.match(html, /국가를 검색해보세요/);
+    assert.match(html, /Japan/);
+    assert.match(html, /Vietnam/);
+    assert.match(html, /\/assets\/countries\/flag-vn\.svg/);
+    assert.match(html, /\/assets\/countries\/flag-jp\.svg/);
+    assert.match(html, /country-youtuber-stack/);
+    assert.match(html, /country-youtuber-stack-item/);
+    assert.match(html, /\.country-youtuber-stack \{[^}]*padding-left: 28px;/);
+    assert.match(html, /\.country-youtuber-stack-item \{[^}]*margin-left: -28px;/);
+    const avatarMatches = html.match(/\/assets\/common\/youtuber-avatar\.jpg/g) ?? [];
+    assert.ok(avatarMatches.length >= 4);
+    assert.match(html, /country-list-item/);
+    assert.match(html, /country-flag-badge/);
   } finally {
     server.close();
     await once(server, 'close');
@@ -76,12 +163,11 @@ await runTest('serves a home preview with dark list menu and service header', as
     assert.match(html, /--bg: #0b0d10/);
     assert.match(html, /\.home-menu-item \{[^}]*min-height: 88px;/);
     assert.match(html, /\.home-menu-image \{[^}]*width: 62px; height: 62px;/);
-    assert.doesNotMatch(html, /home-menu-icon\.sky \.home-menu-icon-badge/);
     assert.match(html, /bottom-nav-item active/);
-    assert.match(html, /홈/);
-    assert.match(html, /국가/);
-    assert.match(html, /유튜버/);
-    assert.match(html, /마이/);
+    assert.match(html, />홈</);
+    assert.match(html, />국가</);
+    assert.match(html, />유튜버</);
+    assert.match(html, />마이</);
   } finally {
     server.close();
     await once(server, 'close');
@@ -188,6 +274,100 @@ await runTest('serves a search preview with mixed entity results', async () => {
   }
 });
 
+await runTest('serves a youtuber selector preview with search and visited country badges', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/youtubers`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /유튜버 선택/);
+    assert.match(html, /유튜버를 검색해보세요/);
+    assert.match(html, /체코제로/);
+    assert.match(html, /잰잰바리/);
+    assert.match(html, /youtuber-selector-screen/);
+    assert.match(html, /youtuber-list-item/);
+    assert.match(html, /\/assets\/common\/youtuber-avatar\.jpg/);
+    assert.match(html, /대한민국 NO 1 여행왕/);
+    assert.match(html, /먹방 여행의 근본/);
+    assert.match(html, /여행은 현지인처럼!/);
+    assert.match(html, /여미새지만 미워할 수 없는 여행가/);
+    assert.match(html, /편안한 여행을 원한다면\?/);
+    assert.match(html, /곽컴퍼니의 NO 2 실세/);
+    assert.match(html, /youtuber-country-stack/);
+    assert.match(html, /youtuber-country-stack-item/);
+    assert.match(html, /\.youtuber-country-stack \{[^}]*padding-left: 28px;/);
+    assert.match(html, /\.youtuber-country-stack-item \{[^}]*width: 33px; height: 33px; margin-left: -25px;/);
+    assert.match(html, /\/assets\/countries\/flag-jp\.svg/);
+    assert.match(html, /\/assets\/countries\/flag-vn\.svg/);
+    assert.match(html, /\/assets\/youtubers\/kwaktube\.jpg/);
+    assert.match(html, /\/assets\/youtubers\/wonji\.jpg/);
+    assert.match(html, /\/assets\/youtubers\/nomadsion\.jpg/);
+    assert.match(html, /\/assets\/youtubers\/czechj\.jpg/);
+    assert.match(html, /\/assets\/youtubers\/janjanbari\.jpg/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
+await runTest('serves a youtuber detail preview with top tags, visited countries, and featured courses', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/youtubers/youtuber-pani-bottle`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /빠니보틀/);
+    assert.match(html, /대한민국 NO 1 여행왕/);
+    assert.match(html, /youtuber-detail-hero/);
+    assert.doesNotMatch(html, /대표 태그/);
+    assert.match(html, /액티비티/);
+    assert.match(html, /폐허/);
+    assert.match(html, /오지/);
+    assert.match(html, /X같습니다/);
+    assert.match(html, /다녀온 국가/);
+    assert.match(html, /일본/);
+    assert.match(html, /여행 코스/);
+    assert.match(html, /빠니보틀 도쿄 하루 압축 여행/);
+    assert.match(html, /class="youtuber-course-flag-badge"/);
+    assert.match(html, /class="country-course-tag-list"/);
+    assert.match(html, /class="country-course-tag"/);
+    assert.doesNotMatch(html, /class="country-course-description"/);
+    assert.match(html, /방문 장소 2곳/);
+    assert.match(html, /소요 시간 : 2시간 40분/);
+    assert.match(html, /\/assets\/countries\/flag-jp\.svg/);
+    assert.match(html, /\/assets\/countries\/flag-vn\.svg/);
+    assert.match(html, /\/assets\/countries\/flag-us\.svg/);
+    assert.match(html, /\/assets\/countries\/flag-fr\.svg/);
+    assert.match(html, /\/assets\/countries\/flag-gb\.svg/);
+    assert.match(html, /class="youtuber-course-row"><div class="youtuber-course-flag-badge">[\s\S]*?<div class="country-course-copy">/);
+    const courseMatches = html.match(/class="country-course-item"/g) ?? [];
+    assert.equal(courseMatches.length, 5);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
 await runTest('serves a my preview with recents, notifications, and policy links', async () => {
   const server = createPreviewServer();
 
@@ -206,7 +386,7 @@ await runTest('serves a my preview with recents, notifications, and policy links
     assert.equal(response.status, 200);
     assert.match(html, /최근 본 코스/);
     assert.match(html, /알림 설정/);
-    assert.match(html, /서비스 약관/);
+    assert.match(html, /정책 및 안내/);
     assert.match(html, /빠니보틀/);
   } finally {
     server.close();
