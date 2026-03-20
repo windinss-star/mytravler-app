@@ -68,20 +68,17 @@ function Layout({ title, activeTab, children }) {
           .home-search-input { flex: 1; border: 0; background: transparent; font-size: 15px; color: var(--ink); outline: none; }
           .home-search-input::placeholder { color: #7c8798; }
           .home-menu-list { display: grid; gap: 12px; }
-          .home-menu-item { display: grid; grid-template-columns: 72px minmax(0, 1fr) 20px; align-items: center; gap: 14px; min-height: 96px; padding: 14px 16px; border-radius: 24px; background: linear-gradient(180deg, var(--surface-soft) 0%, #161a20 100%); border: 1px solid var(--line); text-decoration: none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 22px rgba(0,0,0,0.22); }
-          .home-menu-visual { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; }
-          .home-menu-icon-shadow { position: absolute; inset: auto 10px 4px; height: 14px; border-radius: 999px; background: rgba(0,0,0,0.34); filter: blur(8px); }
-          .home-menu-icon { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 26px; }
-          .home-menu-icon-badge { position: absolute; inset: 3px; border-radius: 23px; background: linear-gradient(180deg, #303742 0%, #20262f 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -10px 18px rgba(0,0,0,0.18), 0 18px 24px rgba(0,0,0,0.2); }
-          .home-menu-icon-core { position: absolute; inset: 10px; border-radius: 18px; background: radial-gradient(circle at top, #3a434f 0%, #252c35 44%, #171b22 100%); box-shadow: inset 0 8px 16px rgba(255,255,255,0.07), inset 0 -10px 16px rgba(0,0,0,0.18); }
-          .home-menu-icon-gloss { position: absolute; top: 11px; left: 15px; width: 28px; height: 12px; border-radius: 999px; background: rgba(255,255,255,0.22); transform: rotate(-16deg); }
-          .home-menu-icon-glyph { position: relative; z-index: 1; font-size: 29px; transform: translateY(-1px); filter: saturate(1.04); }
+          .home-menu-item { display: grid; grid-template-columns: 68px minmax(0, 1fr) 20px; align-items: center; gap: 12px; min-height: 88px; padding: 12px 16px; border-radius: 24px; background: linear-gradient(180deg, var(--surface-soft) 0%, #161a20 100%); border: 1px solid var(--line); text-decoration: none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 22px rgba(0,0,0,0.22); }
+          .home-menu-visual { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 68px; height: 68px; }
+          .home-menu-visual-frame { position: absolute; inset: 7px; border-radius: 20px; background: radial-gradient(circle at 30% 20%, rgba(44, 51, 62, 0.9) 0%, rgba(25, 29, 36, 0.96) 58%, rgba(12, 14, 18, 1) 100%); border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -14px 22px rgba(0,0,0,0.28); }
+          .home-menu-image-shadow { position: absolute; inset: auto 11px 4px; height: 16px; border-radius: 999px; background: rgba(0,0,0,0.42); filter: blur(10px); }
+          .home-menu-image { position: relative; z-index: 1; width: 62px; height: 62px; object-fit: contain; filter: drop-shadow(0 12px 18px rgba(0,0,0,0.24)); }
           .home-menu-copy { display: grid; gap: 6px; min-width: 0; }
           .home-menu-title { font-size: 17px; line-height: 1.35; letter-spacing: -0.03em; color: var(--ink); }
           .home-menu-description { font-size: 13px; line-height: 1.45; color: var(--muted); }
           .home-menu-arrow { justify-self: end; font-size: 24px; color: #6d7785; transform: translateY(-1px); }
           ul, ol { padding-left: 18px; }
-          @media (max-width: 420px) { .content { padding: 16px 16px 104px; } .home-menu-item { grid-template-columns: 64px minmax(0, 1fr) 18px; min-height: 88px; padding: 12px 14px; } .home-menu-visual, .home-menu-icon { width: 64px; height: 64px; } }
+          @media (max-width: 420px) { .content { padding: 16px 16px 104px; } .home-menu-item { grid-template-columns: 60px minmax(0, 1fr) 18px; min-height: 82px; padding: 11px 14px; } .home-menu-visual { width: 60px; height: 60px; } .home-menu-image { width: 54px; height: 54px; } .home-menu-visual-frame { inset: 6px; } }
         `,
       ),
     ),

@@ -1,7 +1,34 @@
 import http from 'node:http';
+import { createReadStream, existsSync } from 'node:fs';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { renderPreviewPage } from './renderPage.js';
+
+const previewDir = path.dirname(fileURLToPath(import.meta.url));
+const assetsDir = path.resolve(previewDir, '../../assets');
+
+function getContentType(filePath) {
+  const extension = path.extname(filePath).toLowerCase();
+
+  if (extension === '.jpg' || extension === '.jpeg') {
+    return 'image/jpeg';
+  }
+
+  if (extension === '.png') {
+    return 'image/png';
+  }
+
+  if (extension === '.webp') {
+    return 'image/webp';
+  }
+
+  if (extension === '.svg') {
+    return 'image/svg+xml';
+  }
+
+  return 'application/octet-stream';
+}
 
 export function createPreviewServer() {
   return http.createServer((request, response) => {
@@ -10,6 +37,20 @@ export function createPreviewServer() {
     if (request.method !== 'GET') {
       response.writeHead(405, { 'content-type': 'text/plain; charset=utf-8' });
       response.end('Method not allowed');
+      return;
+    }
+
+    if (url.pathname.startsWith('/assets/')) {
+      const assetPath = path.resolve(assetsDir, `.${url.pathname.replace('/assets', '')}`);
+
+      if (!assetPath.startsWith(assetsDir) || !existsSync(assetPath)) {
+        response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+        response.end('Not found');
+        return;
+      }
+
+      response.writeHead(200, { 'content-type': getContentType(assetPath) });
+      createReadStream(assetPath).pipe(response);
       return;
     }
 

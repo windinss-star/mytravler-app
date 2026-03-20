@@ -58,20 +58,52 @@ await runTest('serves a home preview with dark list menu and service header', as
     assert.equal(response.status, 200);
     assert.match(html, /마이트래블/);
     assert.match(html, /나라, 도시, 유튜버, 코스를 검색해보세요/);
-    assert.match(html, /국가 탐색/);
-    assert.match(html, /유튜버 탐색/);
-    assert.match(html, /인기 나라 보기/);
-    assert.match(html, /인기 코스 보기/);
+    assert.match(html, /국가 선택/);
+    assert.match(html, /유튜버 선택/);
+    assert.match(html, /실시간 인기 여행지/);
+    assert.match(html, /실시간 인기 코스/);
+    assert.match(html, /국가별 대표 도시와 여행 코스를 살펴보세요/);
+    assert.match(html, /최애 유튜버를 선택하세요/);
+    assert.match(html, /실시간 인기 국가를 살펴보세요/);
+    assert.match(html, /실시간 인기 코스를 살펴보세요/);
     assert.match(html, /home-menu-list/);
     assert.match(html, /home-menu-item/);
     assert.match(html, /home-menu-copy/);
+    assert.match(html, /\/assets\/home\/country-explore-cutout\.png/);
+    assert.match(html, /\/assets\/home\/youtuber-explore-cutout\.png/);
+    assert.match(html, /\/assets\/home\/popular-country-cutout\.png/);
+    assert.match(html, /\/assets\/home\/popular-course-cutout\.png/);
     assert.match(html, /--bg: #0b0d10/);
+    assert.match(html, /\.home-menu-item \{[^}]*min-height: 88px;/);
+    assert.match(html, /\.home-menu-image \{[^}]*width: 62px; height: 62px;/);
     assert.doesNotMatch(html, /home-menu-icon\.sky \.home-menu-icon-badge/);
     assert.match(html, /bottom-nav-item active/);
     assert.match(html, /홈/);
     assert.match(html, /국가/);
     assert.match(html, /유튜버/);
     assert.match(html, /마이/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
+await runTest('serves home icon assets as static files', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/assets/home/country-explore-cutout.png`);
+
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get('content-type') ?? '', /image\/png/);
   } finally {
     server.close();
     await once(server, 'close');

@@ -7,10 +7,10 @@ const content = readFileSync(
 
 const requiredLabels = [
   '마이트래블',
-  '국가 탐색',
-  '유튜버 탐색',
-  '인기 나라 보기',
-  '인기 코스 보기',
+  '국가 선택',
+  '유튜버 선택',
+  '실시간 인기 여행지',
+  '실시간 인기 코스',
 ];
 
 if (!requiredLabels.every((label) => content.includes(label))) {
