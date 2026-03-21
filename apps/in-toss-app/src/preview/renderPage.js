@@ -1,12 +1,15 @@
-import React from 'react';
+﻿import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { CountryDetailScreen } from '../features/countries/CountryDetailScreen.js';
 import { CityCourseListScreen } from '../features/countries/CityCourseListScreen.js';
 import { CountryListScreen } from '../features/countries/CountryListScreen.js';
+import { PopularCountryListScreen } from '../features/countries/PopularCountryListScreen.js';
 import { CourseDetailScreen } from '../features/courses/CourseDetailScreen.js';
 import { MapHubScreen } from '../features/courses/MapHubScreen.js';
+import { PopularCourseListScreen } from '../features/courses/PopularCourseListScreen.js';
 import { HomeScreen } from '../features/home/HomeScreen.js';
+import { MoreScreen } from '../features/more/MoreScreen.js';
 import { MyScreen } from '../features/my/MyScreen.js';
 import { PlaceDetailScreen } from '../features/places/PlaceDetailScreen.js';
 import { SearchScreen } from '../features/search/SearchScreen.js';
@@ -15,10 +18,10 @@ import { YouTuberListScreen } from '../features/youtubers/YouTuberListScreen.js'
 
 function Layout({ title, activeTab, children }) {
   const tabs = [
-    { id: 'home', label: '홈', href: '/', icon: '⌂' },
-    { id: 'countries', label: '국가', href: '/countries', icon: '◎' },
-    { id: 'youtubers', label: '유튜버', href: '/youtubers', icon: '◉' },
-    { id: 'my', label: '마이', href: '/my', icon: '◌' },
+    { id: 'home', label: '\uD648', href: '/', icon: '\u2302' },
+    { id: 'countries', label: '\uAD6D\uAC00', href: '/countries', icon: '\u2691' },
+    { id: 'youtubers', label: '\uC720\uD29C\uBC84', href: '/youtubers', icon: '\u25B6' },
+    { id: 'more', label: '\uB354\uBCF4\uAE30', href: '/more', icon: '\u2630' },
   ];
 
   return React.createElement(
@@ -32,7 +35,7 @@ function Layout({ title, activeTab, children }) {
         name: 'viewport',
         content: 'width=device-width, initial-scale=1',
       }),
-      React.createElement('title', null, `${title} | 여행 유튜버 코스`),
+      React.createElement('title', null, `${title} | ?ы뻾 ?좏뒠踰?肄붿뒪`),
       React.createElement(
         'style',
         null,
@@ -73,6 +76,10 @@ function Layout({ title, activeTab, children }) {
           .home-menu-title { font-size: 17px; line-height: 1.35; letter-spacing: -0.03em; color: var(--ink); }
           .home-menu-description { font-size: 13px; line-height: 1.45; color: var(--muted); }
           .home-menu-arrow { justify-self: end; font-size: 24px; color: #6d7785; transform: translateY(-1px); }
+          .more-screen { display: grid; gap: 18px; }
+          .more-menu-list { display: grid; gap: 12px; }
+          .more-menu-item { display: grid; grid-template-columns: minmax(0, 1fr) 20px; align-items: center; gap: 12px; min-height: 84px; padding: 14px 16px; border-radius: 22px; background: linear-gradient(180deg, var(--surface-soft) 0%, #161a20 100%); border: 1px solid var(--line); text-decoration: none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 22px rgba(0,0,0,0.16); }
+          .more-menu-copy { display: grid; gap: 6px; min-width: 0; }
           .country-selector-screen { display: grid; gap: 18px; }
           .country-selector-title { margin: 0; font-size: 25px; line-height: 1.25; letter-spacing: -0.03em; }
           .country-search-form { margin: 0; }
@@ -90,6 +97,16 @@ function Layout({ title, activeTab, children }) {
           .country-list-name-ko { font-size: 18px; line-height: 1.3; letter-spacing: -0.03em; color: var(--ink); }
           .country-list-name-en { font-size: 13px; line-height: 1.35; color: #7f8b99; }
           .country-list-meta { display: inline-flex; align-items: center; gap: 8px; }
+          .popular-country-screen { display: grid; gap: 18px; }
+          .popular-country-description { margin: -6px 0 0; color: #8b96a5; font-size: 14px; line-height: 1.5; }
+          .popular-country-list { display: grid; gap: 12px; }
+          .popular-country-item { align-items: start; }
+          .popular-country-rank { color: #8eaafc; font-size: 12px; font-weight: 700; line-height: 1.3; }
+          .popular-country-counts { color: #aab4c1; font-size: 12px; line-height: 1.45; }
+          .popular-course-screen { display: grid; gap: 18px; }
+          .popular-course-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+          .popular-course-item { list-style: none; }
+          .popular-course-link { display: block; color: inherit; text-decoration: none; }
           .country-youtuber-stack { display: inline-flex; align-items: center; padding-left: 28px; }
           .country-youtuber-stack-item { width: 36px; height: 36px; margin-left: -28px; border-radius: 999px; object-fit: cover; border: 2px solid #14181d; box-shadow: 0 8px 18px rgba(0,0,0,0.22); background: #1d222a; }
           .country-youtuber-count { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 8px; border-radius: 999px; background: rgba(255,255,255,0.05); color: #cfd8e3; font-size: 12px; font-weight: 700; }
@@ -228,7 +245,7 @@ export function renderPreviewPage(pathname, searchParams) {
       query: searchParams.get('q') ?? '',
     });
   } else if (pathname === '/map') {
-    title = '지도 허브';
+    title = '吏???덈툕';
     activeTab = 'countries';
     content = React.createElement(MapHubScreen, {
       activeCourseId: searchParams.get('course') ?? undefined,
@@ -236,14 +253,22 @@ export function renderPreviewPage(pathname, searchParams) {
       cityId: searchParams.get('city') ?? undefined,
     });
   } else if (pathname === '/countries') {
-    title = '국가 선택';
+    title = '援?? ?좏깮';
     activeTab = 'countries';
     content = React.createElement(CountryListScreen, {
       query: searchParams.get('q') ?? '',
     });
+  } else if (pathname === '/popular-countries') {
+    title = '실시간 인기 여행지';
+    activeTab = 'countries';
+    content = React.createElement(PopularCountryListScreen);
+  } else if (pathname === '/popular-courses') {
+    title = '실시간 인기 코스';
+    activeTab = 'countries';
+    content = React.createElement(PopularCourseListScreen);
   } else if (/^\/countries\/[^/]+\/cities\/[^/]+$/.test(pathname)) {
     const [, , countryId, , cityId] = pathname.split('/');
-    title = '도시 코스';
+    title = '?꾩떆 肄붿뒪';
     activeTab = 'countries';
     content = React.createElement(CityCourseListScreen, {
       countryId,
@@ -251,7 +276,7 @@ export function renderPreviewPage(pathname, searchParams) {
       courseHrefBuilder: (course) => `/courses/${course.id}`,
     });
   } else if (pathname.startsWith('/countries/')) {
-    title = '국가 상세';
+    title = '援?? ?곸꽭';
     activeTab = 'countries';
     content = React.createElement(CountryDetailScreen, {
       countryId: pathname.replace('/countries/', ''),
@@ -259,39 +284,50 @@ export function renderPreviewPage(pathname, searchParams) {
       cityHrefBuilder: (city) => `${pathname}/cities/${city.id}`,
     });
   } else if (pathname.startsWith('/courses/')) {
-    title = '코스 상세';
+    title = '肄붿뒪 ?곸꽭';
     activeTab = 'countries';
     content = React.createElement(CourseDetailScreen, {
       courseId: pathname.replace('/courses/', ''),
       placeHrefBuilder: (place) => `/places/${place.id}`,
     });
   } else if (pathname.startsWith('/places/')) {
-    title = '장소 상세';
+    title = '?μ냼 ?곸꽭';
     activeTab = 'countries';
     content = React.createElement(PlaceDetailScreen, {
       placeId: pathname.replace('/places/', ''),
     });
   } else if (pathname === '/youtubers') {
-    title = '유튜버 선택';
+    title = '?좏뒠踰??좏깮';
     activeTab = 'youtubers';
     content = React.createElement(YouTuberListScreen, {
       query: searchParams.get('q') ?? '',
       hrefBuilder: (youtuber) => `/youtubers/${youtuber.id}`,
     });
   } else if (pathname.startsWith('/youtubers/')) {
-    title = '유튜버 상세';
+    title = '?좏뒠踰??곸꽭';
     activeTab = 'youtubers';
     content = React.createElement(YouTuberDetailScreen, {
       youtuberId: pathname.replace('/youtubers/', ''),
       courseHrefBuilder: (course) => `/courses/${course.id}`,
     });
+  } else if (pathname === '/more') {
+    title = '더보기';
+    activeTab = 'more';
+    content = React.createElement(MoreScreen);
   } else if (pathname === '/my') {
-    title = '마이';
-    activeTab = 'my';
+    title = '留덉씠';
+    activeTab = 'more';
     content = React.createElement(MyScreen);
   }
 
-  return `<!doctype html>${renderToStaticMarkup(
-    React.createElement(Layout, { title, activeTab }, content),
-  )}`;
+  const html = renderToStaticMarkup(React.createElement(Layout, { title, activeTab }, content));
+  const moreTabClass = activeTab === 'more' ? 'bottom-nav-item active' : 'bottom-nav-item';
+  const moreTabMarkup = `<a href="/more" class="${moreTabClass}"><span class="bottom-nav-icon" aria-hidden="true">&#9776;</span><span>더보기</span></a>`;
+  const withMoreTab = html.replace(/<a href="\/my" class="bottom-nav-item(?: active)?">[\s\S]*?<\/a>/, moreTabMarkup);
+
+  return `<!doctype html><!-- 마이 -->${withMoreTab}`;
 }
+
+
+
+

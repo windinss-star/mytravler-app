@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import { once } from 'node:events';
 
 import { createPreviewServer } from '../server.js';
@@ -164,10 +164,67 @@ await runTest('serves a home preview with dark list menu and service header', as
     assert.match(html, /\.home-menu-item \{[^}]*min-height: 88px;/);
     assert.match(html, /\.home-menu-image \{[^}]*width: 62px; height: 62px;/);
     assert.match(html, /bottom-nav-item active/);
-    assert.match(html, />홈</);
-    assert.match(html, />국가</);
-    assert.match(html, />유튜버</);
-    assert.match(html, />마이</);
+    assert.match(html, /href="\/"/);
+    assert.match(html, /href="\/countries"/);
+    assert.match(html, /href="\/youtubers"/);
+    assert.match(html, /href="\/more"/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
+await runTest('serves a popular countries preview with ranked travel destinations', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/popular-countries`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /popular-country-screen/);
+    assert.match(html, /popular-country-list/);
+    assert.match(html, /popular-country-rank/);
+    assert.match(html, /country-list-item/);
+    assert.match(html, /\/countries\/country-jp/);
+    assert.match(html, /\/countries\/country-vn/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
+await runTest('serves a popular courses preview with ranked travel routes', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/popular-courses`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /popular-course-screen/);
+    assert.match(html, /popular-course-list/);
+    assert.match(html, /popular-course-item/);
+    assert.match(html, /youtuber-course-flag-badge/);
+    assert.match(html, /country-course-tag-list/);
+    assert.match(html, /country-course-avatar/);
+    assert.match(html, /\/courses\/course-pani-tokyo-1/);
   } finally {
     server.close();
     await once(server, 'close');
@@ -388,6 +445,32 @@ await runTest('serves a my preview with recents, notifications, and policy links
     assert.match(html, /알림 설정/);
     assert.match(html, /정책 및 안내/);
     assert.match(html, /빠니보틀/);
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
+
+await runTest('serves a more preview with my and trending shortcuts', async () => {
+  const server = createPreviewServer();
+
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+
+  const address = server.address();
+  if (address == null || typeof address === 'string') {
+    throw new Error('Preview server address not available');
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/more`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /more-screen/);
+    assert.match(html, /href="\/my"/);
+    assert.match(html, /href="\/popular-countries"/);
+    assert.match(html, /href="\/popular-courses"/);
   } finally {
     server.close();
     await once(server, 'close');

@@ -131,6 +131,34 @@ export function getCountries(query = '') {
     .sort((left, right) => left.nameKo.localeCompare(right.nameKo, 'ko'));
 }
 
+export function getPopularCountries() {
+  return countries
+    .map((country) => {
+      const relatedYoutubers = getRepresentativeYoutubers(country.id);
+      const countryCourses = courses.filter((course) => course.countryId === country.id);
+      const countryCities = cities.filter((city) => city.countryId === country.id);
+
+      return {
+        ...country,
+        flagImageSrc: getFlagImageSrc(country.code),
+        relatedYoutubers,
+        cityCount: countryCities.length,
+        courseCount: countryCourses.length,
+        popularityScore:
+          countryCourses.length * 100 +
+          relatedYoutubers.length * 10 +
+          countryCities.length,
+      };
+    })
+    .sort((left, right) => {
+      if (right.popularityScore !== left.popularityScore) {
+        return right.popularityScore - left.popularityScore;
+      }
+
+      return left.nameKo.localeCompare(right.nameKo, 'ko');
+    });
+}
+
 export function getCountryDetail(countryId) {
   const country = countries.find((entry) => entry.id === countryId);
   if (country == null) {
